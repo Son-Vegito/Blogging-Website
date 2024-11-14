@@ -4,7 +4,6 @@ import { router as userRouter } from './routes/user';
 
 const app = new Hono();
 
-
 app.get('/', (c) => {
   return c.json({
     message: 'hi there'

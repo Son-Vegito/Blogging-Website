@@ -26,6 +26,7 @@ router.post('/signup', async (c) => {
     const body = await c.req.json()
 
     if (!signupSchema.safeParse(body).success) {
+        c.status(411);
         return c.json({
             message: 'invalid input data'
         })
@@ -38,24 +39,34 @@ router.post('/signup', async (c) => {
     })
 
     if (existingUser) {
+        c.status(411);
         return c.json({
             message: 'User already exists'
         })
     }
 
-    const newUser = await prisma.user.create({
-        data: body
-    })
+    try{
 
-    const token = await sign({
-        id: newUser.id
-    }, c.env.JWT_SECRET)
+        const newUser = await prisma.user.create({
+            data: body
+        })
 
-    return c.json({
-        message: 'User Create Successfully',
-        token
-    });
+        const token = await sign({
+            id: newUser.id
+        }, c.env.JWT_SECRET)
 
+        return c.json({
+            message: 'User Create Successfully',
+            token
+        });
+    }
+    catch(err){
+        c.status(411);
+        return c.json({
+            message: 'Error',
+            error: err
+        })
+    }
 })
 
 const signinSchema = z.object({
@@ -72,33 +83,43 @@ router.post('/signin', async (c) => {
     const body = await c.req.json();
 
     if (!signinSchema.safeParse(body).success) {
+        c.status(411);
         return c.json({
             message: 'invalid input data'
         })
     }
+    try {
 
-    const user = await prisma.user.findFirst({
-        where: {
-            email: body.email,
-            password: body.password
+        const user = await prisma.user.findFirst({
+            where: {
+                email: body.email,
+                password: body.password
+            }
+        })
+
+        if (!user) {
+            c.status(403);
+            return c.json({
+                message: 'user not found'
+            })
         }
-    })
 
-    if (!user) {
+        const token = await sign({
+            id: user.id
+        }, c.env.JWT_SECRET);
+
         return c.json({
-            message: 'user not found'
+            message: 'signin successful',
+            token
+        });
+    }
+    catch (err) {
+        c.status(403);
+        return c.json({
+            message: 'invalid',
+            error: err
         })
     }
-
-    const token = await sign({
-        id: user.id
-    }, c.env.JWT_SECRET);
-
-    return c.json({
-        message: 'signin successful',
-        token
-    });
-
 })
 
 export { router }
