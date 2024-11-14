@@ -7,9 +7,9 @@
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "@prisma/extension-accelerate": "^1.2.1",
+    "@ultra-vegito/blogging-website": "^1.0.0",
     "hono": "^4.6.10",
-    "prisma": "^5.22.0",
-    "zod": "^3.23.8"
+    "prisma": "^5.22.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241022.0",

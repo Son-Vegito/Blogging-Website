@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { verify } from "hono/jwt";
-import { z } from "zod";
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from '@prisma/extension-accelerate'
+import { createBlogSchema, getBlogSchema, updateBlogSchema } from "@ultra-vegito/blogging-website";
 
 const router = new Hono<{
     Bindings: {
@@ -50,11 +50,6 @@ router.use('/*', async (c, next) => {
 
 })
 
-const createBlogSchema = z.object({
-    title: z.string(),
-    content: z.string(),
-})
-
 router.post('/', async (c) => {
 
     const prisma = new PrismaClient({
@@ -65,7 +60,7 @@ router.post('/', async (c) => {
     const authorId = c.get('userId')
 
     if (!createBlogSchema.safeParse(body).success) {
-        c.status(403);
+        c.status(411);
         return c.json({
             message: 'invalid content'
         })
@@ -96,13 +91,6 @@ router.post('/', async (c) => {
 
 })
 
-const updateBlogSchema = z.object({
-    id: z.string().uuid(),
-    title: z.string().optional(),
-    content: z.string().optional(),
-    published: z.boolean().optional()
-})
-
 router.put('/', async (c) => {
     
     const prisma = new PrismaClient({
@@ -113,6 +101,7 @@ router.put('/', async (c) => {
     const authorId = c.get('userId')
 
     if (!updateBlogSchema.safeParse(body).success) {
+        c.status(411)
         return c.json({
             message: 'invalid content'
         })
@@ -169,8 +158,6 @@ router.get('/bulk', async (c) => {
     }
 
 })
-
-const getBlogSchema = z.string().uuid();
 
 router.get('/:id', async (c) => {
 
