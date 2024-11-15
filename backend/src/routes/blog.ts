@@ -142,7 +142,20 @@ router.get('/bulk', async (c) => {
 
     try {
 
-        const blogs = await prisma.blog.findMany({});
+        const blogs = await prisma.blog.findMany({
+            select:{
+                title: true,
+                content: true,
+                id: true,
+                published: true,
+                author:{
+                    select:{
+                        name: true,
+                        id: true
+                    }
+                }
+            }
+        });
 
         return c.json({
             message: 'Found all blogs',
@@ -179,6 +192,18 @@ router.get('/:id', async (c) => {
         const blog = await prisma.blog.findFirst({
             where: {
                 id
+            },
+            select: {
+                title: true,
+                content: true,
+                id: true,
+                published: true,
+                author: {
+                    select: {
+                        name: true,
+                        id: true
+                    }
+                }
             }
         })
 

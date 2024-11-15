@@ -51,7 +51,7 @@ router.post('/signup', async (c) => {
 
         return c.json({
             message: 'User Create Successfully',
-            token
+            token: 'Bearer ' + token
         });
     }
     catch (err) {
@@ -99,7 +99,7 @@ router.post('/signin', async (c) => {
 
         return c.json({
             message: 'signin successful',
-            token
+            token: 'Bearer ' + token
         });
     }
     catch (err) {
