@@ -6,17 +6,21 @@ import LabelledInput from "./LabelledInput"
 import axios from "axios"
 import { BACKEND_URL } from "../config"
 import { useNavigate } from "react-router-dom"
+import LoaderButton from "./LoaderButton"
 
 function SigninInner() {
 
     const navigate = useNavigate();
 
+    const [loading, setLoading] = useState(false)
     const [inputs, setInputs] = useState<SigninSchema>({
         email: '',
         password: '',
     })
 
     async function sendRequest() {
+
+        setLoading(true)
 
         try {
 
@@ -27,6 +31,9 @@ function SigninInner() {
         }
         catch (err) {
             alert('Something went Wrong')
+        }
+        finally{
+            setLoading(false)
         }
     }
 
@@ -50,8 +57,10 @@ function SigninInner() {
                                 password: e.target.value
                             }))
                         }} />
-
-                        <LabelledButton title="Sign In" onClick={sendRequest} />
+                        
+                        {
+                            loading?<LoaderButton/>:<LabelledButton title="Sign In" onClick={sendRequest} />
+                        }
 
                     </div>
                 </div>
@@ -59,6 +68,7 @@ function SigninInner() {
         </div>
     )
 }
+
 
 
 export default SigninInner

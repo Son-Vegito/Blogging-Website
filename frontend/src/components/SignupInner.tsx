@@ -6,11 +6,13 @@ import LabelledInput from "./LabelledInput"
 import axios from "axios"
 import { BACKEND_URL } from "../config"
 import { useNavigate } from "react-router-dom"
+import LoaderButton from "./LoaderButton"
 
 function SignupInner() {
 
     const navigate = useNavigate()
 
+    const [loading, setLoading] = useState(false)
     const [inputs, setInputs] = useState<SignupSchema>({
         email: '',
         password: '',
@@ -18,6 +20,8 @@ function SignupInner() {
     })
 
     async function sendRequest() {
+
+        setLoading(true)
         try {
 
             const response = await axios.post(`${BACKEND_URL}/api/v1/user/signup`, inputs);
@@ -28,6 +32,9 @@ function SignupInner() {
         catch (err) {
             alert('Something went wrong');
 
+        }
+        finally {
+            setLoading(false)
         }
 
     }
@@ -59,7 +66,9 @@ function SignupInner() {
                             }))
                         }} />
 
-                        <LabelledButton title="Sign Up" onClick={sendRequest} />
+                        {
+                            loading ? <LoaderButton /> : <LabelledButton title="Sign Up" onClick={sendRequest} />
+                        }
 
                     </div>
                 </div>
