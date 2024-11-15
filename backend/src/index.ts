@@ -1,8 +1,11 @@
 import { Hono } from 'hono'
 import { router as blogRouter } from './routes/blog'
 import { router as userRouter } from './routes/user';
+import { cors } from 'hono/cors';
 
 const app = new Hono();
+
+app.use('/*', cors())
 
 app.get('/', (c) => {
   return c.json({

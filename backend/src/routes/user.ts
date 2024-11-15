@@ -39,7 +39,7 @@ router.post('/signup', async (c) => {
         })
     }
 
-    try{
+    try {
 
         const newUser = await prisma.user.create({
             data: body
@@ -54,7 +54,7 @@ router.post('/signup', async (c) => {
             token
         });
     }
-    catch(err){
+    catch (err) {
         c.status(411);
         return c.json({
             message: 'Error',

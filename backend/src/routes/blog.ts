@@ -66,7 +66,7 @@ router.post('/', async (c) => {
         })
     }
 
-    try{
+    try {
 
         const newBlog = await prisma.blog.create({
             data: {
@@ -81,7 +81,7 @@ router.post('/', async (c) => {
             blogId: newBlog.id
         })
     }
-    catch(error){
+    catch (error) {
         c.status(411);
         return c.json({
             message: 'Error',
@@ -92,7 +92,7 @@ router.post('/', async (c) => {
 })
 
 router.put('/', async (c) => {
-    
+
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL
     }).$extends(withAccelerate())
@@ -106,9 +106,9 @@ router.put('/', async (c) => {
             message: 'invalid content'
         })
     }
-    
+
     const blogId = body.id;
-    
+
     try {
         await prisma.blog.update({
             where: {
@@ -140,7 +140,7 @@ router.get('/bulk', async (c) => {
         datasourceUrl: c.env.DATABASE_URL
     }).$extends(withAccelerate())
 
-    try{
+    try {
 
         const blogs = await prisma.blog.findMany({});
 
@@ -149,7 +149,7 @@ router.get('/bulk', async (c) => {
             blogs
         });
     }
-    catch(err){
+    catch (err) {
         c.status(411);
         return c.json({
             message: 'Error',
@@ -173,15 +173,15 @@ router.get('/:id', async (c) => {
             message: 'invalid blog ID'
         })
     }
-    
-    try{
-        
+
+    try {
+
         const blog = await prisma.blog.findFirst({
             where: {
                 id
             }
         })
-        
+
         if (blog) {
             return c.json({
                 message: 'Blog Found',
@@ -195,11 +195,11 @@ router.get('/:id', async (c) => {
             })
         }
     }
-    catch(err){
+    catch (err) {
         c.status(411);
         return c.json({
             message: 'Error',
-            error:err
+            error: err
         })
     }
 })
